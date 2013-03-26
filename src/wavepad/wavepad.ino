@@ -50,12 +50,11 @@ void loop()
 
 	//report_values();
 
-    read_row(0, 0);
     //Serial.println(SENSOR_DATA[0][0]);
     delay(10000);
 }
 
-int read_row(uint8_t row, uint8_t col)
+int read_sensor(uint8_t row, uint8_t col)
 {
 	if (row > NUM_ROWS - 1) return -1;
 	if (col > NUM_COLS - 1) return -1;
