@@ -1,6 +1,9 @@
 
 #include <SPI.h>
 
+#define NUM_ROWS 8
+#define NUM_COLS 8
+
 // Digital pins for selecting the MCP3008 ADC used
 // in each row. Note that the CS (chip-select) line
 // is inverted (active LOW).
@@ -8,12 +11,11 @@
 // CS (chip-select) line of the corresponding sensor row.
 // For example, CS_PINS[0] holds the pin number of the
 // CS line for row 0.
-#define NUM_ROWS 8
+
 const int CS_PINS[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
 
-#define NUM_COLS 8
-
-#define DEBUG
+// Uncomment to see Arduino debugging information in the USB serial console:
+// #define DEBUG 
 
 uint16_t SENSOR_DATA[NUM_ROWS][NUM_COLS];
 
@@ -36,7 +38,7 @@ void setup()
     SPI.begin();
 	SPI.setBitOrder(MSBFIRST); // MCP3008 sends MSB first.
 	SPI.setClockDivider(SPI_CLOCK_DIV16); // 16MHz / 16 = 1MHz
-    SPI.setDataMode(SPI_MODE0); // Idle LOW, Falling Edge
+    SPI.setDataMode(SPI_MODE0); // CLock idle LOW, falling edge transfer
 
 	// Open serial port to USB
 	Serial.begin(115200);
@@ -44,11 +46,11 @@ void setup()
 
 void loop()
 {
-	//for (int row = 0; row < NUM_ROWS; row++)
-	//	for (int col = 0; col < NUM_COLS; col ++)
-	//		read_row(row, col);
+	for (int row = 0; row < NUM_ROWS; row++)
+		for (int col = 0; col < NUM_COLS; col ++)
+			read_row(row, col);
 
-	//report_values();
+	report_values();
 
     //Serial.println(SENSOR_DATA[0][0]);
     delay(10000);
@@ -139,12 +141,12 @@ void select_row(uint8_t row)
 
 void report_values()
 {
+	Serial.println(); // Blank line signals data start
 	for (int row = 0; row < NUM_ROWS; row++){
 		for (int col = 0; col < NUM_COLS; col++){
             // TODO: eventually, use Serial.write to make transfer far more compact
 			Serial.print(SENSOR_DATA[row][col]);
 			Serial.print(" ");
-            delay(50);
 		}
 		Serial.println();
 	}
